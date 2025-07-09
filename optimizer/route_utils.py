@@ -23,3 +23,11 @@ def arrive_time_estimator(route:list, vehicle_speed=20):
 
     return route_with_arrival_time_dict
             
+def get_route_distance(route:list[tuple[int,int]]):
+    distance = 0
+    for i in range(len(route)):
+        if i==0 or i==len(route)-1:
+            distance += get_euclidean_distance(route[i], STARTING_POSITION)
+        else:
+            distance += get_euclidean_distance(route[i-1], route[i])
+    return distance
