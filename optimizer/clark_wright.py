@@ -6,7 +6,7 @@ from models.route import Route
 from models.saving_pair import SavingPair
 from distance.base import DistanceCalculator
 from distance.euclidean import EuclideanDistanceCalculator
-
+from optimizer.route_utils import arrive_time_estimator
 class ClarkWrightAlgorithm(RoutingAlgorithm):
     def __init__(self, distance_calculator: DistanceCalculator = None):
         self.distance_calculator = distance_calculator or EuclideanDistanceCalculator()
@@ -245,7 +245,7 @@ class ClarkWrightAlgorithm(RoutingAlgorithm):
         """Get a comprehensive summary of the constructed routes."""
         total_capacity = sum(route.capacity_used for route in routes)
         total_distance = self.get_total_distance(depot, routes) if depot else 0.0
-        
+
         return {
             'num_routes': len(routes),
             'total_capacity_used': total_capacity,
@@ -254,6 +254,7 @@ class ClarkWrightAlgorithm(RoutingAlgorithm):
                 {
                     'route_id': i,
                     'points': [point.coordinates for point in route.path],
+                    'arrival_time': arrive_time_estimator(route, depot),
                     'capacity_used': route.capacity_used,
                     'num_points': len(route.path)
                 }

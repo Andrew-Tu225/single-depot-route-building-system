@@ -1,33 +1,27 @@
 import math
 from datetime import datetime, timedelta
-from data.base_locations import STARTING_POSITION
+from typing import List
+from models.point import Point
+from models.route import Route
 
-
-def get_euclidean_distance(start:tuple, target:tuple) -> float:
-    distance = round(math.sqrt(abs(target[0]-start[0])**2 + abs(target[1]-start[1])**2),2)
+def get_euclidean_distance(start:Point, target:Point) -> float:
+    distance = round(math.sqrt(abs(target.x-start.x)**2 + abs(target.y-start.y)**2),2)
     return distance
 
-def arrive_time_estimator(route:list, vehicle_speed=20):
+def arrive_time_estimator(route:Route, depot:Point, vehicle_speed=20):
     route_with_arrival_time_dict = {}
     current_time = datetime.now()
-    for i in range(len(route)):
+    path = route.path
+
+    for i in range(len(path)):
         distance = 0
-        if i==0 or i==len(route)-1:
-            distance = get_euclidean_distance(STARTING_POSITION, route[i])
+        if i==0 or i==len(path)-1:
+            distance = get_euclidean_distance(depot, path[i])
         else:
-            distance = get_euclidean_distance(route[i-1],route[i])
+            distance = get_euclidean_distance(path[i-1],path[i])
 
         estimated_time = distance / vehicle_speed
         current_time = current_time + timedelta(minutes=estimated_time)
-        route_with_arrival_time_dict[route[i]] = current_time.strftime('%Y-%m-%d %H:%M:%S')
+        route_with_arrival_time_dict[path[i].coordinates] = current_time.strftime('%Y-%m-%d %H:%M:%S')
 
     return route_with_arrival_time_dict
-            
-def get_route_distance(route:list[tuple[int,int]]):
-    distance = 0
-    for i in range(len(route)):
-        if i==0 or i==len(route)-1:
-            distance += get_euclidean_distance(route[i], STARTING_POSITION)
-        else:
-            distance += get_euclidean_distance(route[i-1], route[i])
-    return distance

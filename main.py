@@ -26,10 +26,13 @@ def main():
     print(f"Number of routes: {summary['num_routes']}")
     print(f"Total capacity used: {summary['total_capacity_used']}")
     print(f"Total distance cover from all vehicle: {summary['total_distance']}")
+    print()
     
     for route_info in summary['routes']:
         print(f"Route {route_info['route_id']}: {route_info['points']} "
-              f"(Capacity: {route_info['capacity_used']})")
+              f"(Capacity: {route_info['capacity_used']})\n"
+              f"Arrival time: {route_info['arrival_time']}")
+        print()
     
 
             
